@@ -170,34 +170,6 @@ python infer2.py
    - Annotated images: `src/models/predict_stage2_annotated/`
    - JSON results: `outputs/submission_decoding_2.json`
 
-## 📊 Output Format
-
-### Stage 1 (Detection)
-
-```json
-{
-  "image_name.jpg": [
-    {
-      "bbox": [x1, y1, x2, y2],
-      "confidence": 0.95
-    }
-  ]
-}
-```
-
-### Stage 2 (Decoding)
-
-```json
-{
-  "image_name.jpg": [
-    {
-      "bbox": [x1, y1, x2, y2],
-      "decoded_text": "QR_CODE_CONTENT",
-      "qr_type": "batch"
-    }
-  ]
-}
-```
 
 ## 📋 Requirements
 
