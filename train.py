@@ -1,47 +1,49 @@
 import os
-import yaml
 from ultralytics import YOLO
-import argparse
 
-def train_model(data_yaml, epochs, batch_size, img_size, patience, model_name, project_name):
+def train_model():
     """
-    Trains the YOLOv8 model on the QR code dataset.
+    Train YOLOv8 on QR code dataset with fixed settings.
     """
-    # Load a pre-trained YOLOv8 nano model
-    model = YOLO("yolov8n.pt")
 
-    print("Starting model training...")
-    # Train the model
+    # ✅ Fixed dataset config (update if paths change)
+    DATA_YAML = "src/datasets/data.yaml"
+
+    # ✅ Fixed training parameters
+    EPOCHS = 3
+    BATCH_SIZE = 16
+    IMG_SIZE = 640
+    PATIENCE = 10
+
+    # ✅ Model and output
+    PRETRAINED_MODEL = "yolov8n.pt"   # can be 'yolov8s.pt', etc.
+    MODEL_NAME = "qr_detector"
+    PROJECT_NAME = "src/models"
+
+    # Check dataset config exists
+    if not os.path.exists(DATA_YAML):
+        raise FileNotFoundError(f"❌ data.yaml not found at {DATA_YAML}")
+
+    print(f"✅ Using dataset config: {DATA_YAML}")
+
+    # Load YOLOv8 model
+    model = YOLO(PRETRAINED_MODEL)
+
+    print(f"🚀 Starting training with {PRETRAINED_MODEL}...")
     model.train(
-        data=data_yaml,
-        epochs=epochs,
-        imgsz=img_size,
-        batch=batch_size,
-        patience=patience,  
-        name=model_name,
-        project=project_name,
-        exist_ok=True 
+        data=DATA_YAML,
+        epochs=EPOCHS,
+        batch=BATCH_SIZE,
+        imgsz=IMG_SIZE,
+        patience=PATIENCE,
+        name=MODEL_NAME,
+        project=PROJECT_NAME,
+        exist_ok=True
     )
-    print(f"✅ Training complete. Model saved in '{project_name}/{model_name}'")
+
+    print(f"\n🎉 Training finished!")
+    print(f"📂 Model saved in: {os.path.join(PROJECT_NAME, MODEL_NAME)}")
+
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Train YOLOv8 model for QR code detection.")
-    parser.add_argument('--data_yaml', type=str, required=True, help='Path to the data.yaml configuration file.')
-    parser.add_argument('--epochs', type=int, default=100, help='Number of training epochs.')
-    parser.add_argument('--batch_size', type=int, default=16, help='Batch size for training.')
-    parser.add_argument('--img_size', type=int, default=640, help='Image size for training.')
-    parser.add_argument('--patience', type=int, default=20, help='Early stopping patience (epochs).') # <-- ADDED THIS ARGUMENT
-    parser.add_argument('--model_name', type=str, default='qr_yolo_model', help='Name for the trained model run.')
-    parser.add_argument('--project_name', type=str, default='runs/detect', help='Directory to save training runs.')
-
-    args = parser.parse_args()
-
-    train_model(
-        data_yaml=args.data_yaml,
-        epochs=args.epochs,
-        batch_size=args.batch_size,
-        img_size=args.img_size,
-        patience=args.patience,
-        model_name=args.model_name,
-        project_name=args.project_name
-    )
+    train_model()

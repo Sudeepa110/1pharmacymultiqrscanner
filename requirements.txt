@@ -1,3 +1,7 @@
 ultralytics
-pyzbar
-opencv-python-headless
+opencv-python
+numpy
+torch
+torchvision
+torchaudio
+tqdm
