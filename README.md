@@ -1,30 +1,34 @@
 # Multi-QR Code Recognition Hackathon Submission
 
-This repository contains the source code for the Multi-QR Code Recognition Hackathon. The solution uses a YOLOv8 model for QR code detection and OpenCV’s QRCodeDetector for decoding QR codes, including classification of QR types (batch, manufacturer, distributor, regulator).
-## Repository Structure
+This repository contains the source code for the Multi-QR Code Recognition Hackathon. The solution uses a YOLOv8 model for QR code detection and OpenCV's QRCodeDetector for decoding QR codes, including classification of QR types (batch, manufacturer, distributor, regulator).
 
+## 📁 Repository Structure
+
+```
+multiqr-hackathon/
 │
-├── README.md                # Setup & usage instructions
-├── requirements.txt         # Python deps
-├── train.py                 #  training script
-├── infer.py                 # Must implement inference (input=images → output=JSON)
-├── evaluate.py              # (Optional) for self-check with provided GT
+├── README.md                              # Setup & usage instructions
+├── requirements.txt                       # Python dependencies
+├── train.py                              # Model training script
+├── infer.py                              # Stage 1: Detection inference
+├── infer2.py                             # Stage 2: Decoding inference
+├── evaluate.py                           # (Optional) Self-check with ground truth
 │
-├── data/                    # (participants don't commit dataset, only placeholder)
-│   └── demo_images/         # You’ll provide a small demo set
+├── data/
+│   └── demo_images/                      # Demo image set
 │
-├── outputs/                 
-│   ├── submission_detection_1.json   # Required output file (Stage 1)
-│   └── submission_decoding_2.json    # Required output file (Stage 2, bonus)
+├── outputs/
+│   ├── submission_detection_1.json       # Stage 1 output file
+│   └── submission_decoding_2.json        # Stage 2 output file
 │
-└── src/                     # Their actual model code, utils, data loaders, etc.
-    ├── models/
-    ├── datasets/
-    ├── utils/
+└── src/
+    ├── models/                           # Model weights and outputs
+    ├── datasets/                         # Dataset files
+    ├── utils/                            # Utility functions
     └── __init__.py
+```
 
-
-## Setup Instructions
+## 🚀 Setup Instructions
 
 ### 1. Clone the Repository
 
@@ -38,100 +42,168 @@ cd multiqr-hackathon
 It is recommended to use a Python virtual environment.
 
 ```bash
-# Create a virtual environment (e.g., using venv)
+# Create a virtual environment
+python -m venv venv
 
+# Activate the virtual environment
 # On Linux/Mac
 source venv/bin/activate
+
 # On Windows
 venv\Scripts\activate
-
 
 # Install Python packages
 pip install -r requirements.txt
 ```
 
 ### 3. Data Preparation
-3. Data Preparation
 
-1. Place your dataset folder (QR_DS) inside the src/datasets/ directory.
+1. Place your dataset folder (`QR_DS`) inside the `src/datasets/` directory.
 
-2.  Update the`data.yaml` file inside the `datasets/` directory with the correct paths to your training and validation sets. **You must update the paths below to match your local setup.**
+2. Update the `data.yaml` file inside the `src/datasets/` directory with the correct paths to your training and validation sets.
 
-    ```yaml
-    
-    # data/data.yaml
-    # Copy the path of train,valid,test images and paste in the data.yaml file
-    train: /path/to/your/project/data/QR_DS/train_images/images
-    val: /path/to/your/project/data/QR_DS/valid_images/images
-    test:/path/to/your/project/data/QR_DS/valid_images/images
+**Example `data.yaml`:**
 
-    # Number of classes
-    nc: 1
+```yaml
+# Path to training images
+train: /path/to/your/project/src/datasets/QR_DS/train_images/images
 
-    # Class names
-    names: ['qr_codes']
-    ```
+# Path to validation images
+val: /path/to/your/project/src/datasets/QR_DS/valid_images/images
 
-## Customizing Scripts
+# Path to test images
+test: /path/to/your/project/src/datasets/QR_DS/valid_images/images
 
-All scripts (train.py, infer_stage1.py, infer_stage2.py) have variables at the top that you can modify to match your local setup or experiment parameters.
+# Number of classes
+nc: 1
 
-  ## Training (train.py) 
-        ```yaml
-            DATA_YAML = "src/datasets/data.yaml"  # Path to dataset config
-            EPOCHS = 100                           # Number of training epochs
-            BATCH_SIZE = 16                        # Batch size
-            IMG_SIZE = 640                          # Image size for training
-            PATIENCE = 20                           # Early stopping patience
-            PRETRAINED_MODEL = "yolov8n.pt"        # Pretrained YOLOv8 model
-            PROJECT_NAME = "src/models"            # Directory to save trained weights
-            MODEL_NAME = "qr_detector"             # Subfolder for this model
-        ```
-## Training
+# Class names
+names: ['qr_codes']
+```
 
-To train the model from scratch, run the `train.py` script. The trained model weights (`best.pt`) will be saved in the `runs/detect/qr_yolo_model/` directory.
+> **Note:** Replace `/path/to/your/project/` with your actual project directory path.
+
+## ⚙️ Configuration
+
+All scripts have configurable variables at the top that you can modify to match your local setup.
+
+### Training Configuration (`train.py`)
+
+```python
+DATA_YAML = "src/datasets/data.yaml"    # Path to dataset config
+EPOCHS = 100                             # Number of training epochs
+BATCH_SIZE = 16                          # Batch size
+IMG_SIZE = 640                           # Image size for training
+PATIENCE = 20                            # Early stopping patience
+PRETRAINED_MODEL = "yolov8n.pt"         # Pretrained YOLOv8 model
+PROJECT_NAME = "src/models"              # Directory to save trained weights
+MODEL_NAME = "qr_detector"               # Subfolder for this model
+```
+
+### Stage 1 Configuration (`infer.py`)
+
+```python
+MODEL_PATH = r"D:\multiqr-hackaton\src\models\qr_detector\weights\best.pt"
+INPUT_DIR = r"D:\multiqr-hackaton\src\datasets\QR_DS\test_images"
+OUTPUT_DIR = r"D:\multiqr-hackaton\outputs"
+SAVE_IMAGES = True
+```
+
+### Stage 2 Configuration (`infer2.py`)
+
+```python
+MODEL_PATH = r"D:\multiqr-hackaton\src\models\qr_detector\weights\best.pt"
+INPUT_DIR = r"D:\multiqr-hackaton\src\datasets\QR_DS\test_images"
+OUTPUT_DIR = r"D:\multiqr-hackaton\outputs"
+SAVE_IMAGES = True
+```
+
+## 🎯 Usage
+
+### Training the Model
+
+To train the YOLOv8 model for QR code detection:
 
 ```bash
-python train.py 
-
+python train.py
 ```
-  
-  
-  
-   ## Stage 1 (infer.py) #DETECTION
-        Copy the path of
-                            1. best.pt by going to src\models\qr_detector\weights\
-                            2. test_images by going to src\datasets\QR_DS\
-                   
-                   and paste it in the MODEL_PATH and INPUT_DIR resectively in the file infer.py
 
-                    ```yaml
-                            MODEL_PATH = r"D:\multiqr-hackaton\src\models\qr_detector\weights\best.pt"
-                            INPUT_DIR = r"D:\multiqr-hackaton\src\datasets\QR_DS\test_images"
-                            OUTPUT_DIR = r"D:\multiqr-hackaton\outputs"
-                            SAVE_IMAGES = True  
-                    ```
+The trained model weights (`best.pt`) will be saved in `src/models/qr_detector/weights/`.
 
-            Then Run python infer.py to get the Detection Of Scanner. The test_images  qr detected will be in the folder 
-            src/models/predict_stage1_annotated and the json file will be in the Outputs folder named submission_detection_1.json
+### Stage 1: QR Code Detection
 
+This stage detects QR codes in images and generates bounding box predictions.
 
+1. **Update Configuration:**
+   - Copy the path to `best.pt` from `src/models/qr_detector/weights/`
+   - Copy the path to `test_images` from `src/datasets/QR_DS/`
+   - Paste these paths into `MODEL_PATH` and `INPUT_DIR` in `infer.py`
 
+2. **Run Detection:**
 
-   ## Stage 2 (infer2.py) #DECODING
-           Copy the path of       
-                            1. best.pt by going to src\models\qr_detector\weights\
-                            2. test_images by going to src\datasets\QR_DS\
-                   
-                   and paste it in the MODEL_PATH and INPUT_DIR resectively in the file infer.py
-
-        ```yaml
-                MODEL_PATH = r"D:\multiqr-hackaton\src\models\qr_detector\weights\best.pt"
-                INPUT_DIR = r"D:\multiqr-hackaton\src\datasets\QR_DS\test_images"
-                OUTPUT_DIR = r"D:\multiqr-hackaton\outputs"
-                SAVE_IMAGES = True
-        ```
-
-     Then Run python infer2.py to get the Decoding Of Scanner. The test_images  qr decoded will be in the folder 
-            src/models/predict_stage2_annotated and the json file will be in the Outputs folder named submission_detection_2.json
+```bash
+python infer.py
 ```
+
+3. **Output:**
+   - Annotated images: `src/models/predict_stage1_annotated/`
+   - JSON results: `outputs/submission_detection_1.json`
+
+### Stage 2: QR Code Decoding
+
+This stage decodes the detected QR codes and classifies them by type.
+
+1. **Update Configuration:**
+   - Copy the path to `best.pt` from `src/models/qr_detector/weights/`
+   - Copy the path to `test_images` from `src/datasets/QR_DS/`
+   - Paste these paths into `MODEL_PATH` and `INPUT_DIR` in `infer2.py`
+
+2. **Run Decoding:**
+
+```bash
+python infer2.py
+```
+
+3. **Output:**
+   - Annotated images: `src/models/predict_stage2_annotated/`
+   - JSON results: `outputs/submission_decoding_2.json`
+
+## 📊 Output Format
+
+### Stage 1 (Detection)
+
+```json
+{
+  "image_name.jpg": [
+    {
+      "bbox": [x1, y1, x2, y2],
+      "confidence": 0.95
+    }
+  ]
+}
+```
+
+### Stage 2 (Decoding)
+
+```json
+{
+  "image_name.jpg": [
+    {
+      "bbox": [x1, y1, x2, y2],
+      "decoded_text": "QR_CODE_CONTENT",
+      "qr_type": "batch"
+    }
+  ]
+}
+```
+
+## 📋 Requirements
+
+- Python 3.8+
+- PyTorch
+- Ultralytics YOLOv8
+- OpenCV
+- NumPy
+
+See `requirements.txt` for the complete list of dependencies.
+
