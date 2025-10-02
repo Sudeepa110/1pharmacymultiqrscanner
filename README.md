@@ -134,16 +134,10 @@ The trained model weights (`best.pt`) will be saved in `src/models/qr_detector/w
 This stage detects QR codes in images and generates bounding box predictions.
 
 1. **Update Configuration:**
-<<<<<<< HEAD
    - Copy the path of `best.pt` from `src/models/qr_detector/weights/`
    - Copy the path of `test_images` from `src/datasets/QR_DS/`
    - Copy the path of `outputs folder` from `outputs`
    - Paste these paths into `MODEL_PATH`, `INPUT_DIR` and `OUTPUT_DIR` in `infer.py`
-=======
-   - Copy the path to `best.pt` from `src/models/qr_detector/weights/`
-   - Copy the path to `test_images` from `src/datasets/QR_DS/`
-   - Paste these paths into `MODEL_PATH` and `INPUT_DIR` in `infer.py`
->>>>>>> e6bed7ad794a8216eab5fc5e88f018a7aa4460c6
 
 2. **Run Detection:**
 
@@ -154,7 +148,7 @@ python infer.py
 3. **Output:**
    - Annotated images: `src/models/predict_stage1_annotated/`
    - JSON results: `outputs/submission_detection_1.json`
-<<<<<<< HEAD
+
 
 ### Stage 2: QR Code Decoding
 
@@ -220,64 +214,3 @@ See `requirements.txt` for the complete list of dependencies.
 Ensure all paths in configuration files use absolute paths or are relative to the project root.
 The data.yaml file must be updated before training.
 Model weights are saved automatically during training with early stopping enabled.
-=======
-
-### Stage 2: QR Code Decoding
-
-This stage decodes the detected QR codes and classifies them by type.
-
-1. **Update Configuration:**
-   - Copy the path to `best.pt` from `src/models/qr_detector/weights/`
-   - Copy the path to `test_images` from `src/datasets/QR_DS/`
-   - Paste these paths into `MODEL_PATH` and `INPUT_DIR` in `infer2.py`
-
-2. **Run Decoding:**
-
-```bash
-python infer2.py
-```
-
-3. **Output:**
-   - Annotated images: `src/models/predict_stage2_annotated/`
-   - JSON results: `outputs/submission_decoding_2.json`
-
-## 📊 Output Format
-
-### Stage 1 (Detection)
-
-```json
-{
-  "image_name.jpg": [
-    {
-      "bbox": [x1, y1, x2, y2],
-      "confidence": 0.95
-    }
-  ]
-}
-```
-
-### Stage 2 (Decoding)
-
-```json
-{
-  "image_name.jpg": [
-    {
-      "bbox": [x1, y1, x2, y2],
-      "decoded_text": "QR_CODE_CONTENT",
-      "qr_type": "batch"
-    }
-  ]
-}
-```
-
-## 📋 Requirements
-
-- Python 3.8+
-- PyTorch
-- Ultralytics YOLOv8
-- OpenCV
-- NumPy
-
-See `requirements.txt` for the complete list of dependencies.
-
->>>>>>> e6bed7ad794a8216eab5fc5e88f018a7aa4460c6
