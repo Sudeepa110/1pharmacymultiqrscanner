@@ -1,0 +1,3 @@
+ultralytics
+pyzbar
+opencv-python-headless
