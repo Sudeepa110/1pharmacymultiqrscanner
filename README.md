@@ -12,10 +12,6 @@ multiqr-hackathon/
 ├── train.py                              # Model training script
 ├── infer.py                              # Stage 1: Detection inference
 ├── infer2.py                             # Stage 2: Decoding inference
-<<<<<<< HEAD
-=======
-├── evaluate.py                           # (Optional) Self-check with ground truth
->>>>>>> e6bed7ad794a8216eab5fc5e88f018a7aa4460c6
 │
 ├── data/
 │   └── demo_images/                      # Demo image set
